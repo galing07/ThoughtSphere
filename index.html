@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThoughtSphere • Share What's On Your Mind</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
+        
+        :root {
+            --primary: 234 179 8;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .heading-font {
+            font-family: 'Playfair Display', sans-serif;
+        }
+
+        .hero-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
+        }
+
+        .thought-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .thought-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .modal {
+            animation: modalPop 0.3s ease forwards;
+        }
+        
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white">
+    <!-- Navbar -->
+    <nav class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-yellow-400 rounded-2xl flex items-center justify-center text-zinc-950 font-bold text-2xl">💭</div>
+                <span class="text-3xl font-bold heading-font tracking-tight">ThoughtSphere</span>
+            </div>
+            
+            
+
+            <div class="flex items-center gap-4">
+                <button onclick="openShareModal()" 
+                        class="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 transition-colors text-zinc-950 font-semibold px-6 py-3 rounded-2xl text-sm">
+                    <i class="fas fa-feather"></i>
+                    <span>Share Your Thought</span>
+                </button>
+                
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero-bg min-h-screen flex items-center pt-20">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2 rounded-3xl text-sm">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    12,458 thoughts shared right now
+                </div>
+                
+                <h1 class="text-6xl md:text-7xl font-bold heading-font leading-tight tracking-tighter">
+                    Share what's really<br>on your mind.
+                </h1>
+                
+                <p class="text-xl text-zinc-400 max-w-lg">
+                    A global space where anyone can post their raw thoughts, feelings, and ideas — no judgment, no filters. 
+                    Just pure human expression.
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="openShareModal()" 
+                            class="flex-1 md:flex-none bg-yellow-400 hover:bg-yellow-300 transition-all text-zinc-950 font-semibold text-lg px-10 py-6 rounded-3xl flex items-center justify-center gap-3">
+                        <i class="fas fa-paper-plane"></i>
+                        Share Your Thought Now
+                    </button>
+                    <button onclick="scrollToFeed()" 
+                            class="flex-1 md:flex-none border border-white/30 hover:border-white/60 transition-all font-medium text-lg px-10 py-6 rounded-3xl">
+                        See what others are thinking
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-8 text-sm pt-6">
+                    <div class="flex -space-x-4">
+                        <div class="w-8 h-8 bg-purple-500 rounded-2xl border-2 border-zinc-900 flex items-center justify-center text-xs">🌍</div>
+                        <div class="w-8 h-8 bg-pink-500 rounded-2xl border-2 border-zinc-900 flex items-center justify-center text-xs">🧠</div>
+                        <div class="w-8 h-8 bg-cyan-500 rounded-2xl border-2 border-zinc-900 flex items-center justify-center text-xs">🔥</div>
+                    </div>
+                    <div>
+                        <span class="text-emerald-400 font-semibold">Worldwide community</span><br>
+                        <span class="text-zinc-500">From every corner of the world.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Floating thoughts preview -->
+            <div class="relative hidden md:block">
+                <div class="absolute -top-10 -right-6 bg-zinc-900/90 backdrop-blur-xl border border-zinc-700 rounded-3xl p-6 w-80 thought-card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="text-3xl">😔</div>
+                        <div>
+                            <div class="font-medium">Anonymous Dreamer</div>
+                            <div class="text-xs text-zinc-500">2m ago • Earth</div>
+                        </div>
+                    </div>
+                    <p class="text-zinc-300 leading-relaxed">"Sometimes I wonder if we're all just background characters in someone else's story..."</p>
+                </div>
+
+                <div class="absolute top-40 left-10 bg-zinc-900/90 backdrop-blur-xl border border-zinc-700 rounded-3xl p-6 w-80 thought-card" style="transform: rotate(-6deg);">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="text-3xl">🚀</div>
+                        <div>
+                            <div class="font-medium">Alex Rivera</div>
+                            <div class="text-xs text-zinc-500">17m ago • Spain</div>
+                        </div>
+                    </div>
+                    <p class="text-zinc-300 leading-relaxed">"Just quit my job to pursue my art. Terrified but alive for the first time in years."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feed Preview -->
+    <section id="feed" class="py-24 bg-zinc-900">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="flex justify-between items-end mb-12">
+                <h2 class="text-4xl font-semibold heading-font">Latest Thoughts</h2>
+                <button onclick="openShareModal()" 
+                        class="text-yellow-400 hover:text-yellow-300 flex items-center gap-2 text-sm font-medium">
+                    <i class="fas fa-plus"></i> Add yours
+                </button>
+            </div>
+
+            <div class="space-y-8" id="thoughts-feed">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-24 border-t border-zinc-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-10">
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto bg-yellow-400/10 rounded-3xl flex items-center justify-center text-4xl mb-6">🌐</div>
+                    <h3 class="text-2xl font-semibold mb-3">Global & Anonymous</h3>
+                    <p class="text-zinc-400">Share freely. No accounts required. Your voice reaches every corner of the planet.</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto bg-yellow-400/10 rounded-3xl flex items-center justify-center text-4xl mb-6">🔥</div>
+                    <h3 class="text-2xl font-semibold mb-3">Real Emotions</h3>
+                    <p class="text-zinc-400">Choose your mood with powerful emojis. Raw thoughts only — no likes, no followers, just connection.</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 mx-auto bg-yellow-400/10 rounded-3xl flex items-center justify-center text-4xl mb-6">🔗</div>
+                    <h3 class="text-2xl font-semibold mb-3">Share Anywhere</h3>
+                    <p class="text-zinc-400">Every thought has a "Share Now" button. Spread messages that matter with one click.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="bg-gradient-to-br from-yellow-400 to-amber-500 py-28 text-zinc-950">
+        <div class="max-w-3xl mx-auto text-center px-6">
+            <h2 class="text-5xl font-bold heading-font mb-6">Your thought could change someone's day</h2>
+            <p class="text-2xl mb-10">Don't keep it inside. The world is waiting to hear from you.</p>
+            <button onclick="openShareModal()" 
+                    class="bg-zinc-950 text-white text-xl font-semibold px-16 py-7 rounded-3xl hover:scale-105 transition-transform">
+                Share What's On Your Mind →
+            </button>
+        </div>
+    </section>
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-xl z-[100] flex items-center justify-center p-6">
+        <div class="modal bg-zinc-900 border border-zinc-700 rounded-3xl max-w-lg w-full p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-semibold">What's on your mind?</h3>
+                <button onclick="closeModal()" class="text-zinc-400 hover:text-white text-3xl leading-none">×</button>
+            </div>
+
+            <form id="thought-form" onsubmit="postThought(event)">
+                <!-- Emoji Status -->
+                <div class="mb-6">
+                    <label class="block text-sm text-zinc-400 mb-3">How are you feeling?</label>
+                    <div class="grid grid-cols-6 gap-3 text-4xl" id="emoji-picker">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Thought Text -->
+                <textarea id="thought-text" 
+                          class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl p-6 text-lg resize-none h-40 focus:outline-none focus:border-yellow-400 transition-colors"
+                          placeholder="Type your thought here... Be honest."></textarea>
+
+                <!-- Name -->
+                <div class="mt-6">
+                    <label class="block text-sm text-zinc-400 mb-2">Display name (optional)</label>
+                    <input type="text" id="author-name" 
+                           class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-yellow-400 transition-colors"
+                           placeholder="Anonymous or your name">
+                </div>
+
+                <div class="flex gap-4 mt-8">
+                    <button type="button" onclick="closeModal()" 
+                            class="flex-1 py-5 text-zinc-400 hover:text-white font-medium border border-zinc-700 rounded-2xl">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex-1 bg-yellow-400 hover:bg-yellow-300 transition-colors text-zinc-950 font-bold py-5 rounded-2xl">
+                        Post to the World
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="border-t border-zinc-800 py-12 bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6 text-center text-zinc-500 text-sm">
+            © 2026 ThoughtSphere • A space for human thoughts Just people being real.<br>
+            
+        </div>
+    </footer>
+
+    <script>
+        // Tailwind script already included via CDN
+
+        const emojis = ['😊', '😢', '😠', '😍', '🤔', '🔥', '🌈', '💡', '❤️', '🌍', '✨', '🙌'];
+
+        function populateEmojis() {
+            const container = document.getElementById('emoji-picker');
+            container.innerHTML = '';
+            
+            emojis.forEach(emoji => {
+                const btn = document.createElement('button');
+                btn.className = 'text-5xl hover:scale-125 transition-transform p-2 rounded-2xl';
+                btn.textContent = emoji;
+                btn.onclick = () => selectEmoji(btn, emoji);
+                container.appendChild(btn);
+            });
+        }
+
+        let selectedEmoji = '💭';
+
+        function selectEmoji(element, emoji) {
+            document.querySelectorAll('#emoji-picker button').forEach(btn => {
+                btn.classList.remove('bg-yellow-400/20', 'scale-125');
+            });
+            element.classList.add('bg-yellow-400/20', 'scale-125');
+            selectedEmoji = emoji;
+        }
+
+        function openShareModal() {
+            document.getElementById('share-modal').classList.remove('hidden');
+            document.getElementById('thought-text').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('share-modal').classList.add('hidden');
+            document.getElementById('thought-form').reset();
+        }
+
+        function postThought(e) {
+            e.preventDefault();
+            
+            const text = document.getElementById('thought-text').value.trim();
+            if (!text) {
+                alert("Please write something before posting ❤️");
+                return;
+            }
+
+            const name = document.getElementById('author-name').value.trim() || "Anonymous Soul";
+
+            // Add to feed
+            addThoughtToFeed({
+                emoji: selectedEmoji,
+                text: text,
+                author: name,
+                time: "Just now"
+            });
+
+            closeModal();
+            
+            // Success toast
+            showToast("Your thought has been shared with the world 🌍");
+        }
+
+        function addThoughtToFeed(thought) {
+            const feed = document.getElementById('thoughts-feed');
+            
+            const cardHTML = `
+                <div class="thought-card bg-zinc-900 border border-zinc-700 rounded-3xl p-8">
+                    <div class="flex items-start gap-5">
+                        <div class="text-6xl flex-shrink-0 w-16">${thought.emoji}</div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="font-semibold text-lg">${thought.author}</div>
+                                    <div class="text-xs text-zinc-500">${thought.time} • Everywhere</div>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-zinc-200 leading-relaxed text-[17px]">${thought.text}</p>
+                            
+                            <div class="flex gap-3 mt-8">
+                                <button onclick="shareThisThought(this)" 
+                                        class="flex items-center gap-2 text-xs uppercase tracking-widest font-medium bg-white/5 hover:bg-white/10 px-6 py-3 rounded-2xl transition-colors">
+                                    <i class="fas fa-share"></i>
+                                    Share Now
+                                </button>
+                                <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                        class="text-xs text-zinc-500 hover:text-red-400 transition-colors">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            feed.insertAdjacentHTML('afterbegin', cardHTML);
+        }
+
+        function shareThisThought(btn) {
+    const card = btn.closest('.thought-card');
+    const thoughtText = card.querySelector('p').textContent.trim();
+    
+    const shareLink = `https://aceimg.cfd/bVl1R9F/500-billion/share?thought=${encodeURIComponent(thoughtText.substring(0, 150))}`;
+    
+    // Redirect ke share page
+    window.open(shareLink, '_blank');
+}
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.bottom = '30px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.backgroundColor = '#eab308';
+            toast.style.color = '#18181b';
+            toast.style.padding = '16px 32px';
+            toast.style.borderRadius = '9999px';
+            toast.style.boxShadow = '0 10px 15px -3px rgb(0 0 0 / 0.3)';
+            toast.style.zIndex = '9999';
+            toast.style.fontWeight = '600';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.4s';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(20px)';
+                setTimeout(() => toast.remove(), 400);
+            }, 2800);
+        }
+
+        function fakeLogin() {
+            alert("Welcome to ThoughtSphere! ✨\n\nIn the real version, this would open a minimal login or let you post anonymously.");
+        }
+
+        function scrollToFeed() {
+            document.getElementById('feed').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize some demo thoughts
+        function initDemoThoughts() {
+            const demoThoughts = [
+                {
+                    emoji: "🌅",
+                    text: "Woke up grateful today. Life is messy but beautiful.",
+                    author: "Luna K.",
+                    time: "11m ago"
+                },
+                {
+                    emoji: "⚡",
+                    text: "If you're reading this, I hope your day gets better from here.",
+                    author: "Unknown Voyager",
+                    time: "43m ago"
+                },
+                {
+                    emoji: "🧘",
+                    text: "Still learning how to be kind to myself.",
+                    author: "Mika",
+                    time: "2h ago"
+                }
+            ];
+
+            demoThoughts.forEach(thought => addThoughtToFeed(thought));
+        }
+
+        // Initialize everything
+        window.onload = function() {
+            populateEmojis();
+            initDemoThoughts();
+            
+            // Keyboard shortcut
+            document.addEventListener('keydown', function(e) {
+                if (e.key === "/" && document.getElementById('share-modal').classList.contains('hidden')) {
+                    e.preventDefault();
+                    openShareModal();
+                }
+            });
+        };
+    </script>
+</body>
+</html>
